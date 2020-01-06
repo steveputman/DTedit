@@ -132,6 +132,9 @@ dtedit <- function(input, output, session, thedataframe,
 		   label.edit = 'Edit',
 		   label.add = 'New',
 		   label.copy = 'Copy',
+		   custommodal.delete = NULL,
+		   custommodal.edit = NULL,
+		   custommodal.add = NULL,
 		   show.delete = TRUE,
 		   show.update = TRUE,
 		   show.insert = TRUE,
@@ -397,7 +400,7 @@ dtedit <- function(input, output, session, thedataframe,
 		})
 	})
 	
-	defaultaddModalDialog <- 		shiny::modalDialog(title = title.add,
+	defaultaddModalDialog <- 	shiny::modalDialog(title = title.add,
 	                                              shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:red'),
 	                                              fields,
 	                                              footer = shiny::column(shiny::modalButton('Cancel'),
@@ -406,11 +409,15 @@ dtedit <- function(input, output, session, thedataframe,
 	                                              size = modal.size
 	)
 
-	addModal <- function(row, values, dialog = defaultaddModalDialog) {
+	addModal <- function(row, values, dialog = custommodal.add) {
 		ns <- session$ns # necessary to use namespace for id elements in modaldialogs within modules
 		output[[paste0(name, '_message')]] <- shiny::renderText('')
 		fields <- getFields('_add_', values)
-    dialog
+    if (is.null(dialog)) {
+      defaultaddModalDialog
+    } else {
+      dialog
+    }
 	}
 
 	##### Copy functions #######################################################
