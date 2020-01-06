@@ -135,6 +135,7 @@ dtedit <- function(input, output, session, thedataframe,
 		   custommodal.delete = NULL,
 		   custommodal.edit = NULL,
 		   custommodal.add = NULL,
+		   custommodal.copy = NULL,
 		   show.delete = TRUE,
 		   show.update = TRUE,
 		   show.insert = TRUE,
@@ -353,7 +354,11 @@ dtedit <- function(input, output, session, thedataframe,
 
 	observeEvent(input[[paste0(name, '_add')]], {
 		if(!is.null(row)) {
+		  if(is.null(custommodal.add)) {
 			shiny::showModal(addModal())
+		  } else {
+		    shiny::showModal(custommodal.add)
+		  }
 		}
 	})
 
@@ -400,24 +405,18 @@ dtedit <- function(input, output, session, thedataframe,
 		})
 	})
 	
-	defaultaddModalDialog <- 	shiny::modalDialog(title = title.add,
-	                                              shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:red'),
-	                                              fields,
-	                                              footer = shiny::column(shiny::modalButton('Cancel'),
-	                                                                     shiny::actionButton(session$ns(paste0(name, '_insert')), 'Save'),
-	                                                                     width=12),
-	                                              size = modal.size
-	)
-
-	addModal <- function(row, values, dialog = custommodal.add) {
+	addModal <- function(row, values) {
 		ns <- session$ns # necessary to use namespace for id elements in modaldialogs within modules
 		output[[paste0(name, '_message')]] <- shiny::renderText('')
 		fields <- getFields('_add_', values)
-    if (is.null(dialog)) {
-      defaultaddModalDialog
-    } else {
-      dialog
-    }
+		shiny::modalDialog(title = title.add,
+				   shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:red'),
+				   fields,
+				   footer = shiny::column(shiny::modalButton('Cancel'),
+				   		       shiny::actionButton(ns(paste0(name, '_insert')), 'Save'),
+				   		       width=12),
+				   size = modal.size
+		)
 	}
 
 	##### Copy functions #######################################################
