@@ -354,10 +354,10 @@ dtedit <- function(input, output, session, thedataframe,
 
 	observeEvent(input[[paste0(name, '_add')]], {
 		if(!is.null(row)) {
-		  if(is.null(custommodal.add)) {
-			shiny::showModal(addModal())
+		  if(custommodal.add == "comp") {
+			shiny::showModal(addCompModal())
 		  } else {
-		    shiny::showModal(custommodal.add)
+		    shiny::showModal(addModal())
 		  }
 		}
 	})
@@ -417,6 +417,20 @@ dtedit <- function(input, output, session, thedataframe,
 				   		       width=12),
 				   size = modal.size
 		)
+	}
+	
+	addCompModal <- function(row, values) {
+	  ns <- session$ns # necessary to use namespace for id elements in modaldialogs within modules
+	  output[[paste0(name, '_message')]] <- shiny::renderText('')
+	  fields <- getFields('_add_', values)
+	  shiny::modalDialog(title = title.add,
+	                     shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:blue'),
+	                     fields,
+	                     footer = shiny::column(shiny::modalButton('Cancel'),
+	                                            shiny::actionButton(ns(paste0(name, '_insert')), 'Save'),
+	                                            width=12),
+	                     size = modal.size
+	  )
 	}
 
 	##### Copy functions #######################################################
