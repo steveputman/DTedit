@@ -428,6 +428,7 @@ dtedit <- function(input, output, session, thedataframe,
 	                     fields,
 	                     footer = shiny::column(shiny::modalButton('Cancel'),
 	                                            shiny::actionButton(ns(paste0(name, '_insert')), 'Save'),
+	                                            shiny::modalButton("Testing"),
 	                                            width=12),
 	                     size = modal.size
 	  )
