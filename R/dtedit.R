@@ -210,7 +210,7 @@ dtedit <- function(input, output, session, thedataframe,
 		# was "thedata[,view.cols]", but requires drop=FALSE
 		# to prevent return of vector (instead of dataframe)
 		# if only one column in view.cols
-	}, options = datatable.options, server=TRUE, selection='single', rownames=FALSE)
+	}, filter = 'top', options = datatable.options, server=TRUE, selection='single', rownames=FALSE)
 	outputOptions(output, DataTableName, suspendWhenHidden = FALSE)
 	# without turning off suspendWhenHidden, changes are not rendered if containing tab is not visible
 
@@ -396,19 +396,21 @@ dtedit <- function(input, output, session, thedataframe,
 			return(FALSE)
 		})
 	})
+	
+	defaultaddModalDialog <- 		shiny::modalDialog(title = title.add,
+	                                              shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:red'),
+	                                              fields,
+	                                              footer = shiny::column(shiny::modalButton('Cancel'),
+	                                                                     shiny::actionButton(ns(paste0(name, '_insert')), 'Save'),
+	                                                                     width=12),
+	                                              size = modal.size
+	)
 
-	addModal <- function(row, values) {
+	addModal <- function(row, values, dialog = defaultaddModalDialog) {
 		ns <- session$ns # necessary to use namespace for id elements in modaldialogs within modules
 		output[[paste0(name, '_message')]] <- shiny::renderText('')
 		fields <- getFields('_add_', values)
-		shiny::modalDialog(title = title.add,
-				   shiny::div(shiny::textOutput(ns(paste0(name, '_message'))), style='color:red'),
-				   fields,
-				   footer = shiny::column(shiny::modalButton('Cancel'),
-				   		       shiny::actionButton(ns(paste0(name, '_insert')), 'Save'),
-				   		       width=12),
-				   size = modal.size
-		)
+    dialog
 	}
 
 	##### Copy functions #######################################################
